@@ -44,3 +44,7 @@ Incompatibilities / Changes from kikito's cron.lua:
 - Different error message for callback not being callable.
 - If a one-time timer is run by `timer.update`, it will *no longer be updated*
   by `timer.update`, even if reset.
+
+## Ideas / Tasks
+- [ ] Make an import/export format and add save/load functions - resumable timers.
+  - [ ] Make it possible to save/load with a unix timestamp. (Dangerous.)
