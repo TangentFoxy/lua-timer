@@ -4,7 +4,7 @@ Easy timers in Lua. Spiritual successor to kikito's cron.lua
 Public domain! Who needs an IP anyhow?
 
 ## Usage
-Can be used as a drop-in replacement for [kikito's cron.lua](https://github.com/kikito/cron.lua),
+Can be *mostly* used as a drop-in replacement for [kikito's cron.lua](https://github.com/kikito/cron.lua),
 but that misses the biggest benefit, which is the timer library itself managing
 timers, including discarding expired timers:
 
@@ -36,3 +36,11 @@ end
 
 Timers can have their time set to a new value with `my_timer:reset(time)`. If
 nothing is passed, they will be set to `0`.
+
+---
+
+Incompatibilities / Changes from kikito's cron.lua:
+- Number values are not checked or restricted.
+- Different error message for callback not being callable.
+- If a one-time timer is run by `timer.update`, it will *no longer be updated*
+  by `timer.update`, even if reset.
