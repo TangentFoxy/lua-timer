@@ -46,6 +46,8 @@ If nothing is passed, they will be set to `0`.
   `my_timer:set_deadline(time)`.
 - Repeating timers can have their `interval` changed with
   `my_timer:set_interval(time)`.
+- You can get deadlines/intervals with
+  `my_timer:get_deadline()` / `my_timer:get_interval()`.
 
 ---
 
