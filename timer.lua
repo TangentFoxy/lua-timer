@@ -1,60 +1,64 @@
 local is_callable = function(callback)
   local _type = type(callback)
   if _type == "function" then return true end
-  of _type == "table" then
+  if _type == "table" then
     local metatable = getmetatable(callback)
     return (type(metatable) == "table") and (type(metatable.__call) == "function")
   end
 end
 
 local update_after = function(self, delta)
-  if self.running >= self.time then return true end
-  self.running = self.running + delta
-  if self.running >= self.time then
+  if self.run_time >= self.deadline then return true end
+  self.run_time = self.run_time + delta
+  if self.run_time >= self.deadline then
     self.callback(unpack(self.args))
     return true
   end
 end
 
 local update_every = function(self, delta)
-  self.running = self.running + delta
-  while self.running >= self.time do
+  self.run_time = self.run_time + delta
+  while self.run_time >= self.interval do
     self.callback(unpack(self.args))
-    self.running = self.running - self.time
+    self.run_time = self.run_time - self.interval
   end
 end
 
-local metatable = {
+local timer_metatable = {
   __index = {
     reset = function(self, time)
-      self.running = time or 0
+      self.run_time = time or 0
     end,
   },
 }
 
 local timers = {}
 
-local new_timer = function(time, callback, update, ...)
+local new_timer = function(callback, update, ...)
   assert(is_callable(callback), "callback function must be callable")
 
   local timer = setmetatable({
-    time = time,
     callback = callback,
     update = update,
     args = {...},
-    running = 0,
-  }, metatable)
+    run_time = 0,
+  }, timer_metatable)
 
   timers[timer] = timer
   return timer
 end
 
 return {
-  after = function(time, callback, ...)
-    return new_timer(time, callback, update_after, ...)
+  version = "v1.1.0",
+  after = function(deadline, callback, ...)
+    local timer = new_timer(callback, update_after, ...)
+    timer.deadline = deadline
+    return timer
   end,
-  every = function(time, callback, ...)
-    return new_timer(time, callback, update_every, ...)
+  every = function(interval, callback, ...)
+    local timer = new_timer(callback, update_every, ...)
+    timer.interval = interval
+    return timer
   end,
   update = function(delta)
     local expired = {}
