@@ -37,6 +37,13 @@ local timer_metatable = {
       assert(self.interval, "set_interval() is only for timer.every() timers.")
       self.interval = interval
     end,
+    set_manual = function(self, manual)
+      if manual then
+        self.manual = true
+      else
+        self.manual = nil
+      end
+    end,
   },
 }
 
