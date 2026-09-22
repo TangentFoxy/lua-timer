@@ -51,8 +51,8 @@ If nothing is passed, they will be set to `0`.
 
 Incompatibilities / Changes from kikito's cron.lua:
 - There are no checks or restrictions on what can be set.
-- If a one-time timer is run by `timer.update`, it will *no longer be updated*
-  by `timer.update`, even if reset.
+- If a one-run timer is run by `timer.update`, it will *no longer be updated* by
+  `timer.update`, even if reset.
 
 ## Releases
 GitHub unpublishes my releases frequently, check tags to find them!
