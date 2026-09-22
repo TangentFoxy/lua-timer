@@ -24,7 +24,7 @@ my_timer.manual = true
 my_timer:update(delta)
 ```
 
-`timer.update` returns a table of expired/unexpired timers. Example:
+`timer.update` returns a table of expired timers. Example:
 ```lua
 local my_timer = timer.after(time, function, ...)
 
