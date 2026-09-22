@@ -1,17 +1,12 @@
-local is_callable = function(callback)
-  local _type = type(callback)
-  if _type == "function" then return true end
-  if _type == "table" then
-    local metatable = getmetatable(callback)
-    return (type(metatable) == "table") and (type(metatable.__call) == "function")
-  end
-end
+-- This file is public domain. Created by Tangent, the fox, the legend.
 
 local update_after = function(self, delta)
   if self.run_time >= self.deadline then return true end
   self.run_time = self.run_time + delta
   if self.run_time >= self.deadline then
-    self.callback(unpack(self.args))
+    if self.callback then
+      self.callback(unpack(self.args))
+    end
     return true
   end
 end
@@ -19,15 +14,28 @@ end
 local update_every = function(self, delta)
   self.run_time = self.run_time + delta
   while self.run_time >= self.interval do
-    self.callback(unpack(self.args))
+    if self.callback then
+      self.callback(unpack(self.args))
+    end
     self.run_time = self.run_time - self.interval
   end
 end
 
 local timer_metatable = {
   __index = {
+    get_run_time = function(self)
+      return self.run_time
+    end,
     reset = function(self, time)
       self.run_time = time or 0
+    end,
+    set_deadline = function(self, deadline)
+      assert(self.deadline, "set_deadline() is only for timer.after() timers.")
+      self.deadline = deadline
+    end,
+    set_interval = function(self, interval)
+      assert(self.interval, "set_interval() is only for timer.every() timers.")
+      self.interval = interval
     end,
   },
 }
@@ -35,8 +43,6 @@ local timer_metatable = {
 local timers = {}
 
 local new_timer = function(callback, update, ...)
-  assert(is_callable(callback), "callback function must be callable")
-
   local timer = setmetatable({
     callback = callback,
     update = update,
@@ -49,7 +55,7 @@ local new_timer = function(callback, update, ...)
 end
 
 return {
-  version = "v1.1.0",
+  version = "v1.2.0",
   after = function(deadline, callback, ...)
     local timer = new_timer(callback, update_after, ...)
     timer.deadline = deadline
