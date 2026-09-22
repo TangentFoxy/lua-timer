@@ -25,9 +25,11 @@ local update_every = function(self, delta)
 end
 
 local metatable = {
-  reset = function(self, time)
-    self.running = time or 0
-  end,
+  __index = {
+    reset = function(self, time)
+      self.running = time or 0
+    end,
+  },
 }
 
 local timers = {}
