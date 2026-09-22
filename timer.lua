@@ -23,6 +23,12 @@ end
 
 local timer_metatable = {
   __index = {
+    get_deadline = function(self)
+      return self.deadline
+    end,
+    get_interval = function(self)
+      return self.interval
+    end,
     get_run_time = function(self)
       return self.run_time
     end,
