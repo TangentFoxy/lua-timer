@@ -59,8 +59,10 @@ return {
   update = function(delta)
     local expired = {}
     for timer in pairs(timers) do
-      if timer:update(delta) then
-        expired[timer] = true
+      if not timer.manual then
+        if timer:update(delta) then
+          expired[timer] = true
+        end
       end
     end
     for timer in pairs(expired) do
